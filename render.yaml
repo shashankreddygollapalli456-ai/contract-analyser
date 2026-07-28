@@ -30,7 +30,22 @@ services:
       - key: BIDDING_SERVICE_URL
         value: http://bidding-service:4009
 
-  # 2. Auth Service
+  # 2. Frontend React Application
+  - type: web
+    name: frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false # Set during build to the Gateway URL (e.g. https://gateway-xxxx.onrender.com/api)
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  # 3. Auth Service
   - type: pserv
     name: auth-service
     env: node
@@ -46,14 +61,16 @@ services:
         sync: false
       - key: JWT_SECRET
         fromService:
+          type: web
           name: gateway
           envVar: JWT_SECRET
       - key: JWT_REFRESH_SECRET
         fromService:
+          type: web
           name: gateway
           envVar: JWT_REFRESH_SECRET
 
-  # 3. Contract Service
+  # 4. Contract Service
   - type: pserv
     name: contract-service
     env: node
@@ -68,7 +85,7 @@ services:
       - key: MONGO_URI
         sync: false
 
-  # 4. AI Service
+  # 5. AI Service
   - type: pserv
     name: ai-service
     env: node
@@ -87,7 +104,7 @@ services:
       - key: GEMINI_MODEL
         value: gemini-1.5-flash
 
-  # 5. Risk and Compliance Service
+  # 6. Risk and Compliance Service
   - type: pserv
     name: risk-compliance-service
     env: node
@@ -102,7 +119,7 @@ services:
       - key: MONGO_URI
         sync: false
 
-  # 6. Chat Service
+  # 7. Chat Service
   - type: pserv
     name: chat-service
     env: node
@@ -117,7 +134,7 @@ services:
       - key: MONGO_URI
         sync: false
 
-  # 7. Report Service
+  # 8. Report Service
   - type: pserv
     name: report-service
     env: node
@@ -132,7 +149,7 @@ services:
       - key: MONGO_URI
         sync: false
 
-  # 8. Notification Service
+  # 9. Notification Service
   - type: pserv
     name: notification-service
     env: node
@@ -157,7 +174,7 @@ services:
       - key: SMTP_FROM
         sync: false
 
-  # 9. Audit Service
+  # 10. Audit Service
   - type: pserv
     name: audit-service
     env: node
@@ -172,7 +189,7 @@ services:
       - key: MONGO_URI
         sync: false
 
-  # 10. Bidding Service (Python)
+  # 11. Bidding Service (Python)
   - type: pserv
     name: bidding-service
     env: python
@@ -190,17 +207,3 @@ services:
         sync: false
       - key: GEMINI_MODEL
         value: gemini-1.5-flash
-
-staticSites:
-  # 11. Frontend React Application
-  - name: frontend
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    publishDir: dist
-    envVars:
-      - key: VITE_API_URL
-        sync: false # Set during build to the Gateway URL (e.g. https://gateway-xxxx.onrender.com/api)
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
