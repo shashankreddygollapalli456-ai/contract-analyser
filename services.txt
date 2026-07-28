@@ -1,0 +1,161 @@
+================================================================================
+                    LEGAL AI PLATFORM: SERVICES REFERENCE
+================================================================================
+
+This document lists all microservices and components of the platform, including
+their directories, local ports, build commands, and runtime environment settings.
+
+--------------------------------------------------------------------------------
+1. API GATEWAY (Public-facing Entry Point)
+--------------------------------------------------------------------------------
+* Directory:     gateway
+* Local Port:    4000
+* Runtime:       Node.js
+* Local Command: node src/index.js
+* Description:   Acts as the public router, implementing reverse-proxying,
+                 JWT validation, rate limiting, and NoSQL/SQL query firewalls.
+* Environment Variables Required:
+  - PORT: 4000
+  - JWT_SECRET: secret key for signing auth tokens
+  - JWT_REFRESH_SECRET: secret key for signing refresh tokens
+  - MONGO_URI: MongoDB connection URI
+  - AUDIT_SERVICE_URL: http://localhost:4008
+  - NOTIFICATION_SERVICE_URL: http://localhost:4007
+  - CONTRACT_SERVICE_URL: http://localhost:4002
+  - AI_SERVICE_URL: http://localhost:4003
+  - RISK_SERVICE_URL: http://localhost:4004
+  - BIDDING_SERVICE_URL: http://localhost:4009
+
+--------------------------------------------------------------------------------
+2. AUTH SERVICE
+--------------------------------------------------------------------------------
+* Directory:     services/auth-service
+* Local Port:    4001
+* Runtime:       Node.js
+* Local Command: node src/index.js
+* Description:   Handles user sign-ups, sign-ins, OTP validation, passwords,
+                 heartbeats, active session counts, and admin directories.
+* Environment Variables Required:
+  - PORT: 4001
+  - MONGO_URI: MongoDB connection URI
+  - JWT_SECRET: secret key
+  - JWT_REFRESH_SECRET: secret key
+
+--------------------------------------------------------------------------------
+3. CONTRACT SERVICE
+--------------------------------------------------------------------------------
+* Directory:     services/contract-service
+* Local Port:    4002
+* Runtime:       Node.js
+* Local Command: node src/index.js
+* Description:   Manages document indexing, uploads, uploads metadata, and files.
+* Environment Variables Required:
+  - PORT: 4002
+  - MONGO_URI: MongoDB connection URI
+
+--------------------------------------------------------------------------------
+4. AI SERVICE
+--------------------------------------------------------------------------------
+* Directory:     services/ai-service
+* Local Port:    4003
+* Runtime:       Node.js
+* Local Command: node src/index.js
+* Description:   Processes contract analysis via Google Gemini. Combines multi-country
+                 laws, and highlights compliance details. Supports RabbitMQ & REST fallback.
+* Environment Variables Required:
+  - PORT: 4003
+  - MONGO_URI: MongoDB connection URI
+  - GEMINI_API_KEY: Google Gemini key
+  - GEMINI_MODEL: gemini-1.5-flash
+
+--------------------------------------------------------------------------------
+5. RISK & COMPLIANCE SERVICE
+--------------------------------------------------------------------------------
+* Directory:     services/risk-compliance-service
+* Local Port:    4004
+* Runtime:       Node.js
+* Local Command: node src/index.js
+* Description:   Identifies non-disclosure limits, liabilities, and legal gaps.
+* Environment Variables Required:
+  - PORT: 4004
+  - MONGO_URI: MongoDB connection URI
+
+--------------------------------------------------------------------------------
+6. CHAT SERVICE
+--------------------------------------------------------------------------------
+* Directory:     services/chat-service
+* Local Port:    4005
+* Runtime:       Node.js
+* Local Command: node src/index.js
+* Description:   Powers real-time interactive query sessions over uploaded contracts.
+* Environment Variables Required:
+  - PORT: 4005
+  - MONGO_URI: MongoDB connection URI
+
+--------------------------------------------------------------------------------
+7. REPORT SERVICE
+--------------------------------------------------------------------------------
+* Directory:     services/report-service
+* Local Port:    4006
+* Runtime:       Node.js
+* Local Command: node src/index.js
+* Description:   Compiles analytical documents merging compliance details and AI audits.
+* Environment Variables Required:
+  - PORT: 4006
+  - MONGO_URI: MongoDB connection URI
+
+--------------------------------------------------------------------------------
+8. NOTIFICATION SERVICE
+--------------------------------------------------------------------------------
+* Directory:     services/notification-service
+* Local Port:    4007
+* Runtime:       Node.js
+* Local Command: node src/index.js
+* Description:   Dispatches email verification codes and alert notifications via SMTP.
+* Environment Variables Required:
+  - PORT: 4007
+  - MONGO_URI: MongoDB connection URI
+  - SMTP_HOST: smtp server host (e.g. smtp.gmail.com)
+  - SMTP_PORT: smtp server port (e.g. 587)
+  - SMTP_USER: email address
+  - SMTP_PASS: email app password
+  - SMTP_FROM: sender string
+
+--------------------------------------------------------------------------------
+9. AUDIT SERVICE
+--------------------------------------------------------------------------------
+* Directory:     services/audit-service
+* Local Port:    4008
+* Runtime:       Node.js
+* Local Command: node src/index.js
+* Description:   Monitors security events, admin actions, and platform logs.
+* Environment Variables Required:
+  - PORT: 4008
+  - MONGO_URI: MongoDB connection URI
+
+--------------------------------------------------------------------------------
+10. BIDDING SERVICE (Python)
+--------------------------------------------------------------------------------
+* Directory:     services/bidding-service
+* Local Port:    4009
+* Runtime:       Python (Flask)
+* Local Command: python src/main.py
+* Prod Command:  gunicorn -b 0.0.0.0:$PORT src.main:app
+* Description:   Performs eligibility checking, deadline tracking, and bidding rules extraction.
+* Environment Variables Required:
+  - PORT: 4009
+  - MONGO_URI: MongoDB connection URI
+  - GEMINI_API_KEY: Google Gemini key
+  - GEMINI_MODEL: gemini-1.5-flash
+
+--------------------------------------------------------------------------------
+11. FRONTEND REACT CLIENT
+--------------------------------------------------------------------------------
+* Directory:     frontend
+* Local Port:    5173 (Vite default dev port)
+* Runtime:       Vite SPA (React)
+* Local Command: npm run dev
+* Prod Build:    npm run build (Outputs to frontend/dist/ folder)
+* Description:   User dashboard portal, camera document upload module, and Admin room panels.
+* Environment Variables Required:
+  - VITE_API_URL: Public URL of the API Gateway (e.g. https://gateway-url.com/api)
