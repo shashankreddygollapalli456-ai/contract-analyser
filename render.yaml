@@ -1,0 +1,194 @@
+services:
+  # 1. API Gateway (Public-facing Router)
+  - type: web
+    name: gateway
+    env: docker
+    dockerfile: gateway/Dockerfile
+    dockerContext: .
+    plan: starter
+    port: 4000
+    envVars:
+      - key: PORT
+        value: 4000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: MONGO_URI
+        sync: false # User will provide MongoDB Atlas URI
+      - key: AUDIT_SERVICE_URL
+        value: http://audit-service:4008
+      - key: NOTIFICATION_SERVICE_URL
+        value: http://notification-service:4007
+      - key: CONTRACT_SERVICE_URL
+        value: http://contract-service:4002
+      - key: AI_SERVICE_URL
+        value: http://ai-service:4003
+      - key: RISK_SERVICE_URL
+        value: http://risk-compliance-service:4004
+      - key: BIDDING_SERVICE_URL
+        value: http://bidding-service:4009
+
+  # 2. Frontend React Application
+  - type: web
+    name: frontend
+    env: docker
+    dockerfile: frontend/Dockerfile
+    dockerContext: .
+    plan: starter
+    port: 80
+    envVars:
+      - key: PORT
+        value: 80
+
+  # 3. Auth Service
+  - type: pserv
+    name: auth-service
+    env: docker
+    dockerfile: services/auth-service/Dockerfile
+    dockerContext: .
+    plan: starter
+    port: 4001
+    envVars:
+      - key: PORT
+        value: 4001
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        fromService:
+          name: gateway
+          envVar: JWT_SECRET
+      - key: JWT_REFRESH_SECRET
+        fromService:
+          name: gateway
+          envVar: JWT_REFRESH_SECRET
+
+  # 4. Contract Service
+  - type: pserv
+    name: contract-service
+    env: docker
+    dockerfile: services/contract-service/Dockerfile
+    dockerContext: .
+    plan: starter
+    port: 4002
+    envVars:
+      - key: PORT
+        value: 4002
+      - key: MONGO_URI
+        sync: false
+
+  # 5. AI Service
+  - type: pserv
+    name: ai-service
+    env: docker
+    dockerfile: services/ai-service/Dockerfile
+    dockerContext: .
+    plan: starter
+    port: 4003
+    envVars:
+      - key: PORT
+        value: 4003
+      - key: MONGO_URI
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-1.5-flash
+
+  # 6. Risk and Compliance Service
+  - type: pserv
+    name: risk-compliance-service
+    env: docker
+    dockerfile: services/risk-compliance-service/Dockerfile
+    dockerContext: .
+    plan: starter
+    port: 4004
+    envVars:
+      - key: PORT
+        value: 4004
+      - key: MONGO_URI
+        sync: false
+
+  # 7. Chat Service
+  - type: pserv
+    name: chat-service
+    env: docker
+    dockerfile: services/chat-service/Dockerfile
+    dockerContext: .
+    plan: starter
+    port: 4005
+    envVars:
+      - key: PORT
+        value: 4005
+      - key: MONGO_URI
+        sync: false
+
+  # 8. Report Service
+  - type: pserv
+    name: report-service
+    env: docker
+    dockerfile: services/report-service/Dockerfile
+    dockerContext: .
+    plan: starter
+    port: 4006
+    envVars:
+      - key: PORT
+        value: 4006
+      - key: MONGO_URI
+        sync: false
+
+  # 9. Notification Service
+  - type: pserv
+    name: notification-service
+    env: docker
+    dockerfile: services/notification-service/Dockerfile
+    dockerContext: .
+    plan: starter
+    port: 4007
+    envVars:
+      - key: PORT
+        value: 4007
+      - key: MONGO_URI
+        sync: false
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+
+  # 10. Audit Service
+  - type: pserv
+    name: audit-service
+    env: docker
+    dockerfile: services/audit-service/Dockerfile
+    dockerContext: .
+    plan: starter
+    port: 4008
+    envVars:
+      - key: PORT
+        value: 4008
+      - key: MONGO_URI
+        sync: false
+
+  # 11. Bidding Service (Python)
+  - type: pserv
+    name: bidding-service
+    env: docker
+    dockerfile: services/bidding-service/Dockerfile
+    dockerContext: .
+    plan: starter
+    port: 4009
+    envVars:
+      - key: PORT
+        value: 4009
+      - key: MONGO_URI
+        sync: false
+      - key: DOCKER_ENV
+        value: "true"
+      - key: GEMINI_MODEL
+        value: gemini-1.5-flash

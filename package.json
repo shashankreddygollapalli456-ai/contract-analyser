@@ -1,0 +1,10 @@
+{
+  "name": "legal-ai-platform-root",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "amqplib": "^0.10.4",
+    "axios": "^1.6.8",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
