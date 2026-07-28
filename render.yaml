@@ -6,7 +6,6 @@ services:
     rootDir: gateway
     buildCommand: npm install
     startCommand: node src/index.js
-    plan: starter
     port: 4000
     envVars:
       - key: PORT
@@ -46,13 +45,12 @@ services:
         destination: /index.html
 
   # 3. Auth Service
-  - type: pserv
+  - type: web
     name: auth-service
     env: node
     rootDir: services/auth-service
     buildCommand: npm install --production
     startCommand: node src/index.js
-    plan: starter
     port: 4001
     envVars:
       - key: PORT
@@ -71,13 +69,12 @@ services:
           envVar: JWT_REFRESH_SECRET
 
   # 4. Contract Service
-  - type: pserv
+  - type: web
     name: contract-service
     env: node
     rootDir: services/contract-service
     buildCommand: npm install --production
     startCommand: node src/index.js
-    plan: starter
     port: 4002
     envVars:
       - key: PORT
@@ -86,13 +83,12 @@ services:
         sync: false
 
   # 5. AI Service
-  - type: pserv
+  - type: web
     name: ai-service
     env: node
     rootDir: services/ai-service
     buildCommand: npm install --production
     startCommand: node src/index.js
-    plan: starter
     port: 4003
     envVars:
       - key: PORT
@@ -105,13 +101,12 @@ services:
         value: gemini-1.5-flash
 
   # 6. Risk and Compliance Service
-  - type: pserv
+  - type: web
     name: risk-compliance-service
     env: node
     rootDir: services/risk-compliance-service
     buildCommand: npm install --production
     startCommand: node src/index.js
-    plan: starter
     port: 4004
     envVars:
       - key: PORT
@@ -120,13 +115,12 @@ services:
         sync: false
 
   # 7. Chat Service
-  - type: pserv
+  - type: web
     name: chat-service
     env: node
     rootDir: services/chat-service
     buildCommand: npm install --production
     startCommand: node src/index.js
-    plan: starter
     port: 4005
     envVars:
       - key: PORT
@@ -135,13 +129,12 @@ services:
         sync: false
 
   # 8. Report Service
-  - type: pserv
+  - type: web
     name: report-service
     env: node
     rootDir: services/report-service
     buildCommand: npm install --production
     startCommand: node src/index.js
-    plan: starter
     port: 4006
     envVars:
       - key: PORT
@@ -150,13 +143,12 @@ services:
         sync: false
 
   # 9. Notification Service
-  - type: pserv
+  - type: web
     name: notification-service
     env: node
     rootDir: services/notification-service
     buildCommand: npm install --production
     startCommand: node src/index.js
-    plan: starter
     port: 4007
     envVars:
       - key: PORT
@@ -175,13 +167,12 @@ services:
         sync: false
 
   # 10. Audit Service
-  - type: pserv
+  - type: web
     name: audit-service
     env: node
     rootDir: services/audit-service
     buildCommand: npm install --production
     startCommand: node src/index.js
-    plan: starter
     port: 4008
     envVars:
       - key: PORT
@@ -190,13 +181,12 @@ services:
         sync: false
 
   # 11. Bidding Service (Python)
-  - type: pserv
+  - type: web
     name: bidding-service
     env: python
     rootDir: services/bidding-service
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn -b 0.0.0.0:$PORT src.main:app
-    plan: starter
     port: 4009
     envVars:
       - key: PORT
