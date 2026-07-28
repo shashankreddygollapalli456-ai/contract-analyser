@@ -12,7 +12,8 @@ const services = [
   { name: 'report-service', dir: 'services/report-service', port: 4006, cmd: 'node', args: ['src/index.js'] },
   { name: 'notification-service', dir: 'services/notification-service', port: 4007, cmd: 'node', args: ['src/index.js'] },
   { name: 'gateway', dir: 'gateway', port: 4000, cmd: 'node', args: ['src/index.js'] },
-  { name: 'bidding-service', dir: 'services/bidding-service', port: 4009, cmd: 'python', args: ['src/main.py'] }
+  { name: 'bidding-service', dir: 'services/bidding-service', port: 4009, cmd: 'python', args: ['src/main.py'] },
+  { name: 'frontend', dir: 'frontend', port: 5173, cmd: 'npm', args: ['run', 'dev'] }
 ];
 
 console.log('=== LEGAL AI PLATFORM: LOCAL SERVICES RUNNER ===\n');
@@ -53,12 +54,13 @@ const fileEnv = loadEnv();
 for (const service of services) {
   const servicePath = path.resolve(__dirname, service.dir);
   
-  if (service.cmd === 'node') {
+  if (service.cmd === 'node' || service.name === 'frontend') {
     const nodeModulesPath = path.join(servicePath, 'node_modules');
     if (!fs.existsSync(nodeModulesPath)) {
       console.log(`\n[${service.name}] node_modules not found. Installing dependencies via npm install...`);
       try {
-        execSync('npm install --production', { cwd: servicePath, stdio: 'inherit' });
+        const installCmd = service.name === 'frontend' ? 'npm install' : 'npm install --production';
+        execSync(installCmd, { cwd: servicePath, stdio: 'inherit' });
         console.log(`[${service.name}] Dependencies installed successfully.`);
       } catch (err) {
         console.error(`[${service.name}] Failed to install dependencies:`, err.message);
@@ -125,6 +127,12 @@ for (const service of services) {
 
   children.push(child);
 }
+
+console.log('\n==================================================');
+console.log('🚀 Legal AI Platform is now running locally!');
+console.log('👉 Access the frontend at: http://localhost:5173');
+console.log('👉 API Gateway is at:      http://localhost:4000');
+console.log('==================================================\n');
 
 // Handle clean shutdown on exit
 function shutdown() {
