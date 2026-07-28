@@ -31,13 +31,11 @@ services:
         value: http://bidding-service:4009
 
   # 2. Frontend React Application
-  - type: web
+  - type: static
     name: frontend
-    env: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     publishDir: dist
-    plan: starter
     envVars:
       - key: VITE_API_URL
         sync: false # Set during build to the Gateway URL (e.g. https://gateway-xxxx.onrender.com/api)
