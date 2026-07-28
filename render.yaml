@@ -31,8 +31,9 @@ services:
         value: http://bidding-service:4009
 
   # 2. Frontend React Application
-  - type: static
+  - type: web
     name: frontend
+    env: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     publishDir: dist
