@@ -2,9 +2,10 @@ services:
   # 1. API Gateway (Public-facing Router)
   - type: web
     name: gateway
-    env: docker
-    dockerfile: gateway/Dockerfile
-    dockerContext: .
+    env: node
+    rootDir: gateway
+    buildCommand: npm install
+    startCommand: node src/index.js
     plan: starter
     port: 4000
     envVars:
@@ -32,21 +33,26 @@ services:
   # 2. Frontend React Application
   - type: web
     name: frontend
-    env: docker
-    dockerfile: frontend/Dockerfile
-    dockerContext: .
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    publishDir: dist
     plan: starter
-    port: 80
     envVars:
-      - key: PORT
-        value: 80
+      - key: VITE_API_URL
+        sync: false # Set during build to the Gateway URL (e.g. https://gateway-xxxx.onrender.com/api)
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
 
   # 3. Auth Service
   - type: pserv
     name: auth-service
-    env: docker
-    dockerfile: services/auth-service/Dockerfile
-    dockerContext: .
+    env: node
+    rootDir: services/auth-service
+    buildCommand: npm install --production
+    startCommand: node src/index.js
     plan: starter
     port: 4001
     envVars:
@@ -66,9 +72,10 @@ services:
   # 4. Contract Service
   - type: pserv
     name: contract-service
-    env: docker
-    dockerfile: services/contract-service/Dockerfile
-    dockerContext: .
+    env: node
+    rootDir: services/contract-service
+    buildCommand: npm install --production
+    startCommand: node src/index.js
     plan: starter
     port: 4002
     envVars:
@@ -80,9 +87,10 @@ services:
   # 5. AI Service
   - type: pserv
     name: ai-service
-    env: docker
-    dockerfile: services/ai-service/Dockerfile
-    dockerContext: .
+    env: node
+    rootDir: services/ai-service
+    buildCommand: npm install --production
+    startCommand: node src/index.js
     plan: starter
     port: 4003
     envVars:
@@ -98,9 +106,10 @@ services:
   # 6. Risk and Compliance Service
   - type: pserv
     name: risk-compliance-service
-    env: docker
-    dockerfile: services/risk-compliance-service/Dockerfile
-    dockerContext: .
+    env: node
+    rootDir: services/risk-compliance-service
+    buildCommand: npm install --production
+    startCommand: node src/index.js
     plan: starter
     port: 4004
     envVars:
@@ -112,9 +121,10 @@ services:
   # 7. Chat Service
   - type: pserv
     name: chat-service
-    env: docker
-    dockerfile: services/chat-service/Dockerfile
-    dockerContext: .
+    env: node
+    rootDir: services/chat-service
+    buildCommand: npm install --production
+    startCommand: node src/index.js
     plan: starter
     port: 4005
     envVars:
@@ -126,9 +136,10 @@ services:
   # 8. Report Service
   - type: pserv
     name: report-service
-    env: docker
-    dockerfile: services/report-service/Dockerfile
-    dockerContext: .
+    env: node
+    rootDir: services/report-service
+    buildCommand: npm install --production
+    startCommand: node src/index.js
     plan: starter
     port: 4006
     envVars:
@@ -140,9 +151,10 @@ services:
   # 9. Notification Service
   - type: pserv
     name: notification-service
-    env: docker
-    dockerfile: services/notification-service/Dockerfile
-    dockerContext: .
+    env: node
+    rootDir: services/notification-service
+    buildCommand: npm install --production
+    startCommand: node src/index.js
     plan: starter
     port: 4007
     envVars:
@@ -164,9 +176,10 @@ services:
   # 10. Audit Service
   - type: pserv
     name: audit-service
-    env: docker
-    dockerfile: services/audit-service/Dockerfile
-    dockerContext: .
+    env: node
+    rootDir: services/audit-service
+    buildCommand: npm install --production
+    startCommand: node src/index.js
     plan: starter
     port: 4008
     envVars:
@@ -178,9 +191,10 @@ services:
   # 11. Bidding Service (Python)
   - type: pserv
     name: bidding-service
-    env: docker
-    dockerfile: services/bidding-service/Dockerfile
-    dockerContext: .
+    env: python
+    rootDir: services/bidding-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: python src/main.py
     plan: starter
     port: 4009
     envVars:
@@ -188,7 +202,9 @@ services:
         value: 4009
       - key: MONGO_URI
         sync: false
-      - key: DOCKER_ENV
-        value: "true"
+      - key: GEMINI_API_KEY
+        fromService:
+          name: ai-service
+          envVar: GEMINI_API_KEY
       - key: GEMINI_MODEL
         value: gemini-1.5-flash

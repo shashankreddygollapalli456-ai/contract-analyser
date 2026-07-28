@@ -3,7 +3,7 @@ import axios from "axios";
 // All requests go through the API Gateway - the frontend never talks to
 // an individual microservice or the database directly.
 const client = axios.create({
-  baseURL: "/api",
+  baseURL: import.meta.env.VITE_API_URL || "/api",
 });
 
 client.interceptors.request.use((config) => {
