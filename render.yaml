@@ -29,22 +29,7 @@ services:
       - key: BIDDING_SERVICE_URL
         value: http://bidding-service:4009
 
-  # 2. Frontend React Application
-  - type: web
-    name: frontend
-    env: static
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    publishDir: dist
-    envVars:
-      - key: VITE_API_URL
-        sync: false # Set during build to the Gateway URL (e.g. https://gateway-xxxx.onrender.com/api)
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-
-  # 3. Auth Service
+  # 2. Auth Service
   - type: web
     name: auth-service
     env: node
@@ -68,7 +53,7 @@ services:
           name: gateway
           envVar: JWT_REFRESH_SECRET
 
-  # 4. Contract Service
+  # 3. Contract Service
   - type: web
     name: contract-service
     env: node
@@ -82,7 +67,7 @@ services:
       - key: MONGO_URI
         sync: false
 
-  # 5. AI Service
+  # 4. AI Service
   - type: web
     name: ai-service
     env: node
@@ -100,7 +85,7 @@ services:
       - key: GEMINI_MODEL
         value: gemini-1.5-flash
 
-  # 6. Risk and Compliance Service
+  # 5. Risk and Compliance Service
   - type: web
     name: risk-compliance-service
     env: node
@@ -114,7 +99,7 @@ services:
       - key: MONGO_URI
         sync: false
 
-  # 7. Chat Service
+  # 6. Chat Service
   - type: web
     name: chat-service
     env: node
@@ -128,7 +113,7 @@ services:
       - key: MONGO_URI
         sync: false
 
-  # 8. Report Service
+  # 7. Report Service
   - type: web
     name: report-service
     env: node
@@ -142,7 +127,7 @@ services:
       - key: MONGO_URI
         sync: false
 
-  # 9. Notification Service
+  # 8. Notification Service
   - type: web
     name: notification-service
     env: node
@@ -166,7 +151,7 @@ services:
       - key: SMTP_FROM
         sync: false
 
-  # 10. Audit Service
+  # 9. Audit Service
   - type: web
     name: audit-service
     env: node
@@ -180,7 +165,7 @@ services:
       - key: MONGO_URI
         sync: false
 
-  # 11. Bidding Service (Python)
+  # 10. Bidding Service (Python)
   - type: web
     name: bidding-service
     env: python
@@ -197,3 +182,17 @@ services:
         sync: false
       - key: GEMINI_MODEL
         value: gemini-1.5-flash
+
+staticSites:
+  # 11. Frontend React Application
+  - name: frontend
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false # Set during build to the Gateway URL (e.g. https://gateway-xxxx.onrender.com/api)
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
