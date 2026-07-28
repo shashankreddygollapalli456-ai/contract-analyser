@@ -46,7 +46,7 @@ services:
         destination: /index.html
 
   # 3. Auth Service
-  - type: private
+  - type: pserv
     name: auth-service
     env: node
     rootDir: services/auth-service
@@ -69,7 +69,7 @@ services:
           envVar: JWT_REFRESH_SECRET
 
   # 4. Contract Service
-  - type: private
+  - type: pserv
     name: contract-service
     env: node
     rootDir: services/contract-service
@@ -84,7 +84,7 @@ services:
         sync: false
 
   # 5. AI Service
-  - type: private
+  - type: pserv
     name: ai-service
     env: node
     rootDir: services/ai-service
@@ -103,7 +103,7 @@ services:
         value: gemini-1.5-flash
 
   # 6. Risk and Compliance Service
-  - type: private
+  - type: pserv
     name: risk-compliance-service
     env: node
     rootDir: services/risk-compliance-service
@@ -118,7 +118,7 @@ services:
         sync: false
 
   # 7. Chat Service
-  - type: private
+  - type: pserv
     name: chat-service
     env: node
     rootDir: services/chat-service
@@ -133,7 +133,7 @@ services:
         sync: false
 
   # 8. Report Service
-  - type: private
+  - type: pserv
     name: report-service
     env: node
     rootDir: services/report-service
@@ -148,7 +148,7 @@ services:
         sync: false
 
   # 9. Notification Service
-  - type: private
+  - type: pserv
     name: notification-service
     env: node
     rootDir: services/notification-service
@@ -173,7 +173,7 @@ services:
         sync: false
 
   # 10. Audit Service
-  - type: private
+  - type: pserv
     name: audit-service
     env: node
     rootDir: services/audit-service
@@ -188,7 +188,7 @@ services:
         sync: false
 
   # 11. Bidding Service (Python)
-  - type: private
+  - type: pserv
     name: bidding-service
     env: python
     rootDir: services/bidding-service
